@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,15 +19,15 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot {  
   // variables
 
   private Command m_autonomousCommand;
 
-  CANSparkMax top_left_motor = new CANSparkMax(1, MotorType.kBrushless);
-  CANSparkMax top_right_motor = new CANSparkMax(3, MotorType.kBrushless);
-  CANSparkMax bottom_left_motor = new CANSparkMax(2, MotorType.kBrushless);
-  CANSparkMax bottom_right_motor = new CANSparkMax(4, MotorType.kBrushless);
+  private DifferentialDrive m_robotDrive;
+  private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
+  private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+  
   private RobotContainer m_robotContainer;
   static double SPEEDMOD = 0.8;
   static XboxController controller = new XboxController(0);
@@ -34,20 +35,18 @@ public class Robot extends TimedRobot {
 
   // functions for the robot _---------
 
-  public void rightside_move(double speed) {
-    top_right_motor.set(speed);
-    bottom_right_motor.set(speed);
+  private final PWMSparkMax m_leftmotor = new PWMSparkMax(0);
+  private final PWMSparkMax m_leftmotorfollower = new PWMSparkMax(1);
+  private final PWMSparkMax m_rightmotor = new PWMSparkMax(2);
+  private final PWMSparkMax m_rightmotorfollower = new PWMSparkMax(3);
 
-  }
-
-  public void leftside_move(double speed) {
-    top_left_motor.set(speed);
-    bottom_left_motor.set(speed);
-  }
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    m_rightMotor.setInverted(true);
+
+    m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
   }
 
   @Override
@@ -76,13 +75,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double turn = controller.getRawAxis(4);
-    double throttle = controller.getRawAxis(3) - controller.getRawAxis(2);
-    if (turn > DEADZONE * -1 && turn < DEADZONE) {
-      turn = 0;
-    }
-    rightside_move(turn - throttle);
-    leftside_move(turn + throttle);
+
 
   }
 
@@ -119,6 +112,18 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledExit() {
 
+  }
+
+  private DifferentialDrive set() {
+    return null;
+  }
+
+  private DifferentialDrive set() {
+    return null;
+  }
+
+  private DifferentialDrive set() {
+    return null;
   }
 
 }
