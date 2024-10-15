@@ -5,6 +5,7 @@
 // packages
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -30,7 +31,7 @@ public class Robot extends TimedRobot {
   
   private RobotContainer m_robotContainer;
   static double SPEEDMOD = 0.8;
-  static XboxController controller = new XboxController(0);
+  static Joystick controller = new Joystick(0);
   static double DEADZONE = 0.01;
 
   // functions for the robot _---------
@@ -77,6 +78,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
+    // Arcade drive with a given forward and turn rate
+    
+    m_robotDrive.arcadeDrive(-controller.getY(), -controller.getX());
+
+
   }
 
   @Override
@@ -113,17 +119,4 @@ public class Robot extends TimedRobot {
   public void disabledExit() {
 
   }
-
-  private DifferentialDrive set() {
-    return null;
-  }
-
-  private DifferentialDrive set() {
-    return null;
-  }
-
-  private DifferentialDrive set() {
-    return null;
-  }
-
 }
