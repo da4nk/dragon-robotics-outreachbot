@@ -7,18 +7,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-// rev libraries
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Robot extends TimedRobot {  
   // variables
@@ -26,8 +19,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private DifferentialDrive m_robotDrive;
-  private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
-  private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+
   
   private RobotContainer m_robotContainer;
   static double SPEEDMOD = 0.8;
@@ -36,18 +28,20 @@ public class Robot extends TimedRobot {
 
   // functions for the robot _---------
 
-  private final PWMSparkMax m_leftmotor = new PWMSparkMax(0);
-  private final PWMSparkMax m_leftmotorfollower = new PWMSparkMax(1);
-  private final PWMSparkMax m_rightmotor = new PWMSparkMax(2);
-  private final PWMSparkMax m_rightmotorfollower = new PWMSparkMax(3);
-
+  private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
+  private final PWMSparkMax m_leftMotorFollower = new PWMSparkMax(1);
+  private final PWMSparkMax m_rightMotor = new PWMSparkMax(2);
+  private final PWMSparkMax m_rightMotorFollower = new PWMSparkMax(3);
+  Timer timer = new Timer();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     m_rightMotor.setInverted(true);
 
+    m_rightMotorFollower.setInverted(true);
     m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+
   }
 
   @Override
@@ -57,11 +51,25 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    timer.reset();
+    timer.start();
+
   }
 
   @Override
   public void autonomousPeriodic() {
-  }
+
+    if(timer.get() < 2.0)
+    {
+      m_robotDrive.arcadeDrive(0, 0.5);
+      m_leftMotorFollower.set(m_leftMotor.get());
+      m_rightMotorFollower.set(m_rightMotor.get());
+    }
+    m_robotDrive.arcadeDrive(0, 0);
+    m_leftMotorFollower.set(m_leftMotor.get());
+    m_rightMotorFollower.set(m_rightMotor.get());
+  } 
 
   @Override
   public void autonomousExit() {
@@ -80,7 +88,10 @@ public class Robot extends TimedRobot {
 
     // Arcade drive with a given forward and turn rate
     
+    
     m_robotDrive.arcadeDrive(-controller.getY(), -controller.getX());
+    m_leftMotorFollower.set(m_leftMotor.get());
+    m_rightMotorFollower.set(m_rightMotor.get());
 
 
   }
